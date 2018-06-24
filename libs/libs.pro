@@ -9,6 +9,7 @@ SUBDIRS = \
     librepcb \
     parseagle \
     quazip \
+    router \
     sexpresso
 
 librepcb.depends = \
@@ -18,5 +19,6 @@ librepcb.depends = \
     parseagle \
     hoedown \
     quazip \
+    router \
     sexpresso \
 
