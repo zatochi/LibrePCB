@@ -155,7 +155,7 @@ public:
      *
      * Returns the corresponding parent object in the host application's model.
      */
-    auto Parent() const
+    const PNS_HORIZON_PARENT_ITEM* Parent() const
     {
         return m_parent;
     }

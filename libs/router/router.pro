@@ -13,20 +13,16 @@ CONFIG -= qt app_bundle
 CONFIG += staticlib
 
 # suppress compiler warnings
-#CONFIG += warn_off
+CONFIG += warn_off
 
 INCLUDEPATH += \
     include \
 
 SOURCES += \
-    common/geometry/convex_hull.cpp \
-    common/geometry/hetriang.cpp \
     common/geometry/seg.cpp \
     common/geometry/shape.cpp \
     common/geometry/shape_collisions.cpp \
-    common/geometry/shape_file_io.cpp \
     common/geometry/shape_line_chain.cpp \
-    common/geometry/shape_poly_set.cpp \
     common/math/math_util.cpp \
     router/pns_algo_base.cpp \
     router/pns_diff_pair.cpp \

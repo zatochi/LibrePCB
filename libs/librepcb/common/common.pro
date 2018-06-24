@@ -26,6 +26,8 @@ CONFIG += staticlib
 INCLUDEPATH += \
     ../../fontobene \
     ../../quazip \
+    ../../router \
+    ../../router/include \
     ../../sexpresso \
     ../../ \
 
@@ -98,6 +100,7 @@ SOURCES += \
     network/networkrequest.cpp \
     network/networkrequestbase.cpp \
     network/repository.cpp \
+    router/pns_horizon_iface.cpp \
     signalrole.cpp \
     sqlitedatabase.cpp \
     systeminfo.cpp \
@@ -203,6 +206,7 @@ HEADERS += \
     network/networkrequest.h \
     network/networkrequestbase.h \
     network/repository.h \
+    router/pns_horizon_iface.h \
     scopeguard.h \
     scopeguardlist.h \
     signalrole.h \
