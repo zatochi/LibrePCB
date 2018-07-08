@@ -23,6 +23,8 @@ then
   sudo apt-get install -qq libglu1-mesa-dev zlib1g zlib1g-dev openssl xvfb doxygen graphviz
 
   # python packages
+  pip install --user future
+  pip install --user -r ./tests/funq/requirements.txt
   pip install --user --upgrade --upgrade-strategy only-if-needed \
               "urllib3[secure]==1.22" "transifex-client~=$TRANSIFEX_CLI_VERSION"
 
@@ -70,5 +72,10 @@ then
   pacman -Sy --noconfirm --needed openssl
   pip install --upgrade --upgrade-strategy only-if-needed \
               "urllib3==1.22" "transifex-client~=$TRANSIFEX_CLI_VERSION"
+
+  # funq (custom version because the version on PyPi doesn't yet work on Windows)
+  git clone -b improve-windows-support https://github.com/ubruhin/funq.git
+  pip install funq/server funq/client future
+  pip install -r ./tests/funq/requirements.txt
 
 fi
