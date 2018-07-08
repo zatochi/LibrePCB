@@ -23,6 +23,8 @@ then
   sudo apt-get install -qq libglu1-mesa-dev zlib1g zlib1g-dev openssl xvfb doxygen graphviz
 
   # python packages
+  pip install --user future
+  pip install --user -r ./tests/funq/requirements.txt
   pip install --user --upgrade --upgrade-strategy only-if-needed \
               "urllib3[secure]==1.22" "transifex-client~=$TRANSIFEX_CLI_VERSION"
 

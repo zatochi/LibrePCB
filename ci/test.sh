@@ -17,3 +17,11 @@ else
   ./build/output/librepcb-unittests.exe
 fi
 
+# run functional tests
+if [ "${TRAVIS_OS_NAME-}" = "linux" ]
+then
+  EXECUTABLE="`pwd`/LibrePCB-x86_64.AppImage"
+  pushd ./tests/funq
+  xvfb-run -a --server-args="-screen 0 1024x768x24" pytest -v --librepcb-executable="$EXECUTABLE"
+  popd
+fi
