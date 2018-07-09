@@ -82,6 +82,32 @@ int main(int argc, char* argv[])
     // Initialize all 3rd party libraries
     init3rdPartyLibs();
 
+    // Migrate from old setting format to INI
+    // backward compatibility - remove this some time!
+    QSettings::setDefaultFormat(QSettings::NativeFormat);
+    QSettings oldSettings;
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+    QSettings newSettings;
+    if (!FilePath(newSettings.fileName()).isExistingFile()) {
+        qInfo() << "Migrating old settings to" << newSettings.fileName();
+        foreach (const QString& key, oldSettings.allKeys()) {
+            newSettings.setValue(key, oldSettings.value(key));
+        }
+    }
+
+    // Make sure the INI format is used for settings on all platforms because:
+    // - Consistent storage format on all platforms (also simplifies functional testing)
+    // - Windows Registry is a mess (hard to find, edit and track changes of our settings)
+    QSettings::setDefaultFormat(QSettings::IniFormat);
+
+    // Use different configuration directory if supplied by environment variable
+    // "LIBREPCB_CONFIG_DIR" (needed for functional testing)
+    QString customConfigDir = qgetenv("LIBREPCB_CONFIG_DIR");
+    if (!customConfigDir.isEmpty()) {
+        qInfo() << "Using custom configuration directory" << customConfigDir;
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, customConfigDir);
+    }
+
     // Start network access manager thread
     QScopedPointer<NetworkAccessManager> networkAccessManager(new NetworkAccessManager());
 
