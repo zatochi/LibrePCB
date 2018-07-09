@@ -36,6 +36,7 @@
 #include <librepcb/project/circuit/circuit.h>
 #include <librepcb/common/dialogs/gridsettingsdialog.h>
 #include <librepcb/common/dialogs/boarddesignrulesdialog.h>
+#include <librepcb/common/dialogs/filedialog.h>
 #include "../dialogs/projectpropertieseditordialog.h"
 #include <librepcb/project/settings/projectsettings.h>
 #include <librepcb/common/graphics/graphicsview.h>
@@ -420,8 +421,8 @@ void BoardEditor::on_actionExportAsPdf_triggered()
 {
     try
     {
-        QString filename = QFileDialog::getSaveFileName(this, tr("PDF Export"),
-                                                        QDir::homePath(), "*.pdf");
+        QString filename = FileDialog::getSaveFileName(this, tr("PDF Export"),
+                                                       QDir::homePath(), "*.pdf");
         if (filename.isEmpty()) return;
         if (!filename.endsWith(".pdf")) filename.append(".pdf");
         //FilePath filepath(filename);

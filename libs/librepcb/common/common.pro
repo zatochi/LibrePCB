@@ -48,6 +48,7 @@ SOURCES += \
     debug.cpp \
     dialogs/boarddesignrulesdialog.cpp \
     dialogs/circlepropertiesdialog.cpp \
+    dialogs/filedialog.cpp \
     dialogs/gridsettingsdialog.cpp \
     dialogs/holepropertiesdialog.cpp \
     dialogs/polygonpropertiesdialog.cpp \
@@ -146,6 +147,7 @@ HEADERS += \
     debug.h \
     dialogs/boarddesignrulesdialog.h \
     dialogs/circlepropertiesdialog.h \
+    dialogs/filedialog.h \
     dialogs/gridsettingsdialog.h \
     dialogs/holepropertiesdialog.h \
     dialogs/polygonpropertiesdialog.h \
