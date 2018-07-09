@@ -30,3 +30,9 @@ i18n/*.ts
 
 # Vim
 *.swp
+
+# Python
+.idea/
+.pytest_cache/
+__pycache__/
+*.pyc
