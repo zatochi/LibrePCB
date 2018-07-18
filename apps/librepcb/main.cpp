@@ -100,6 +100,14 @@ int main(int argc, char* argv[])
     // - Windows Registry is a mess (hard to find, edit and track changes of our settings)
     QSettings::setDefaultFormat(QSettings::IniFormat);
 
+    // Use different configuration directory if supplied by environment variable
+    // "LIBREPCB_CONFIG_DIR" (needed for functional testing)
+    QString customConfigDir = qgetenv("LIBREPCB_CONFIG_DIR");
+    if (!customConfigDir.isEmpty()) {
+        qInfo() << "Using custom configuration directory" << customConfigDir;
+        QSettings::setPath(QSettings::IniFormat, QSettings::UserScope, customConfigDir);
+    }
+
     // Start network access manager thread
     QScopedPointer<NetworkAccessManager> networkAccessManager(new NetworkAccessManager());
 

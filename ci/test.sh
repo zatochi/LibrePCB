@@ -24,4 +24,16 @@ then
   pushd ./tests/funq
   xvfb-run -a --server-args="-screen 0 1024x768x24" pytest -v --librepcb-executable="$EXECUTABLE"
   popd
+elif [ "${TRAVIS_OS_NAME-}" = "osx" ]
+then
+  EXECUTABLE="`pwd`/build/output/librepcb.app/Contents/MacOS/librepcb"
+  pushd ./tests/funq
+  funq "$EXECUTABLE"
+  pytest -v -s --log_cli=true --log_cli_level=DEBUG --librepcb-executable="$EXECUTABLE"
+  popd
+else
+  EXECUTABLE="`pwd`/build/install/opt/bin/librepcb.exe"
+  pushd ./tests/funq
+  pytest -v --librepcb-executable="$EXECUTABLE"
+  popd
 fi

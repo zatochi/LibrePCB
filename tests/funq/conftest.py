@@ -84,7 +84,7 @@ class LibrePcbFixture(object):
         with open(config_ini, 'w') as f:
             if self.workspace_path:
                 f.write("[workspaces]\n")
-                f.write("most_recently_used=\"{}\"\n".format(self.workspace_path))
+                f.write("most_recently_used=\"{}\"\n".format(self.workspace_path.replace('\\', '/')))
 
     def _args(self):
         args = []
@@ -97,7 +97,7 @@ class LibrePcbFixture(object):
         # Make GUI independent from the system's language
         env['LC_ALL'] = 'C'
         # Override configuration location to make tests independent of existing configs
-        env['XDG_CONFIG_HOME'] = os.path.join(self.tmpdir, 'config')
+        env['LIBREPCB_CONFIG_DIR'] = os.path.join(self.tmpdir, 'config')
         # Use a neutral username
         env['USERNAME'] = 'testuser'
         # Force LibrePCB to use Qt-style file dialogs because native dialogs don't work

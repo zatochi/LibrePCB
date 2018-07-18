@@ -54,6 +54,11 @@ then
                "urllib3==1.22" "transifex-client~=$TRANSIFEX_CLI_VERSION"
   export PATH="$PATH:`python2 -m site --user-base`/bin"
 
+  # funq
+  git clone -b develop https://github.com/ubruhin/funq.git
+  pip2 install --user funq/server funq/client future
+  pip2 install --user -r ./tests/funq/requirements.txt
+
   # Qt Installer Framework
   wget -cq "$QTIFW_URL_BASE/QtInstallerFramework-mac-x64.dmg"
   hdiutil attach ./QtInstallerFramework-mac-x64.dmg
@@ -72,5 +77,10 @@ then
   pacman -Sy --noconfirm --needed openssl
   pip install --upgrade --upgrade-strategy only-if-needed \
               "urllib3==1.22" "transifex-client~=$TRANSIFEX_CLI_VERSION"
+
+  # funq
+  git clone -b improve-windows-support https://github.com/ubruhin/funq.git
+  pip install funq/server funq/client future
+  pip install -r ./tests/funq/requirements.txt
 
 fi
