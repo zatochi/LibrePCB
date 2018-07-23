@@ -100,7 +100,7 @@ bool CmdRotateSelectedFootprintItems::performExecute()
         center += hole->getHole().getPosition();
     }
     center /= count;
-    center.mapToGrid(mContext.graphicsView.getGridProperties().getInterval());
+    center.mapToGrid(*mContext.graphicsView.getGridProperties().getInterval());
 
     // rotate all selected elements
     foreach (const QSharedPointer<FootprintPadGraphicsItem>& pad, pads) {Q_ASSERT(pad);

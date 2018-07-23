@@ -110,7 +110,7 @@ void UnplacedComponentsDock::setBoard(Board* board)
     {
         mBoardConnection1 = connect(board, &Board::deviceAdded, [this](BI_Device& c){Q_UNUSED(c); updateComponentsList();});
         mBoardConnection2 = connect(board, &Board::deviceRemoved, [this](BI_Device& c){Q_UNUSED(c); updateComponentsList();});
-        mNextPosition = Point::fromMm(0, -20).mappedToGrid(board->getGridProperties().getInterval());
+        mNextPosition = Point::fromMm(0, -20).mappedToGrid(*board->getGridProperties().getInterval());
         updateComponentsList();
     }
 }
@@ -362,7 +362,7 @@ void UnplacedComponentsDock::addNextDeviceToCmdGroup(ComponentInstance& cmp,
         mNextPosition = Point::fromMm(0, mNextPosition.getY().toMm() - 10);
     else
         mNextPosition += Point::fromMm(10, 0);
-    mNextPosition.mapToGrid(mBoard->getGridProperties().getInterval());
+    mNextPosition.mapToGrid(*mBoard->getGridProperties().getInterval());
 }
 
 void UnplacedComponentsDock::commitUndoCmdGroup() noexcept

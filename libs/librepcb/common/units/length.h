@@ -24,6 +24,7 @@
  *  Includes
  ****************************************************************************************/
 #include <QtCore>
+#include <type_safe/constrained_type.hpp>
 #include "../fileio/sexpression.h"
 
 /*****************************************************************************************
@@ -87,26 +88,26 @@ class Length
          *
          * The length will be initialized with zero nanometers.
          */
-        Length() noexcept : Length(0) {}
+        constexpr Length() noexcept : Length(0) {}
 
         /**
          * @brief Copy Constructor
          *
          * @param length        Another Length object
          */
-        Length(const Length& length) noexcept : mNanometers(length.mNanometers) {}
+        constexpr Length(const Length& length) noexcept : mNanometers(length.mNanometers) {}
 
         /**
          * @brief Constructor with length in nanometers
          *
          * @param nanometers    The length in nanometers
          */
-        Length(LengthBase_t nanometers) noexcept : mNanometers(nanometers) {}
+        constexpr Length(LengthBase_t nanometers) noexcept : mNanometers(nanometers) {}
 
         /**
          * @brief Destructor
          */
-        ~Length() noexcept {}
+        ~Length() = default;
 
 
         // Setters
@@ -448,18 +449,18 @@ class Length
         Length  operator/(const Length& rhs) const  {return Length(mNanometers / rhs.mNanometers);}
         Length  operator/(LengthBase_t rhs) const   {return Length(mNanometers / rhs);}
         Length  operator%(const Length& rhs) const  {return Length(mNanometers % rhs.mNanometers);}
-        bool    operator>(const Length& rhs) const  {return mNanometers > rhs.mNanometers;}
-        bool    operator>(LengthBase_t rhs) const   {return mNanometers > rhs;}
-        bool    operator<(const Length& rhs) const  {return mNanometers < rhs.mNanometers;}
-        bool    operator<(LengthBase_t rhs) const   {return mNanometers < rhs;}
-        bool    operator>=(const Length& rhs) const {return mNanometers >= rhs.mNanometers;}
-        bool    operator>=(LengthBase_t rhs) const  {return mNanometers >= rhs;}
-        bool    operator<=(const Length& rhs) const {return mNanometers <= rhs.mNanometers;}
-        bool    operator<=(LengthBase_t rhs) const  {return mNanometers <= rhs;}
-        bool    operator==(const Length& rhs) const {return mNanometers == rhs.mNanometers;}
-        bool    operator==(LengthBase_t rhs) const  {return mNanometers == rhs;}
-        bool    operator!=(const Length& rhs) const {return mNanometers != rhs.mNanometers;}
-        bool    operator!=(LengthBase_t rhs) const  {return mNanometers != rhs;}
+        constexpr bool operator>(const Length& rhs) const  {return mNanometers > rhs.mNanometers;}
+        constexpr bool operator>(LengthBase_t rhs) const   {return mNanometers > rhs;}
+        constexpr bool operator<(const Length& rhs) const  {return mNanometers < rhs.mNanometers;}
+        constexpr bool operator<(LengthBase_t rhs) const   {return mNanometers < rhs;}
+        constexpr bool operator>=(const Length& rhs) const {return mNanometers >= rhs.mNanometers;}
+        constexpr bool operator>=(LengthBase_t rhs) const  {return mNanometers >= rhs;}
+        constexpr bool operator<=(const Length& rhs) const {return mNanometers <= rhs.mNanometers;}
+        constexpr bool operator<=(LengthBase_t rhs) const  {return mNanometers <= rhs;}
+        constexpr bool operator==(const Length& rhs) const {return mNanometers == rhs.mNanometers;}
+        constexpr bool operator==(LengthBase_t rhs) const  {return mNanometers == rhs;}
+        constexpr bool operator!=(const Length& rhs) const {return mNanometers != rhs.mNanometers;}
+        constexpr bool operator!=(LengthBase_t rhs) const  {return mNanometers != rhs;}
 
     private:
 
@@ -528,6 +529,52 @@ class Length
 };
 
 /*****************************************************************************************
+ *  Class UnsignedLength
+ ****************************************************************************************/
+
+struct UnsignedLengthVerifier {
+    template <typename Value, typename Predicate>
+    static constexpr auto verify(Value&& val, const Predicate& p) -> typename std::decay<Value>::type {
+        return p(val) ? std::forward<Value>(val) : (
+            throw RuntimeError(__FILE__, __LINE__, Length::tr("Value out of range.")),
+            std::forward<Value>(val));
+    }
+};
+
+struct UnsignedLengthConstraint {
+    constexpr bool operator()(const Length& l) const noexcept {
+        return l >= 0;
+    }
+};
+
+using UnsignedLength = type_safe::constrained_type<Length, UnsignedLengthConstraint, UnsignedLengthVerifier>;
+
+/*****************************************************************************************
+ *  Class PositiveLength
+ ****************************************************************************************/
+
+struct PositiveLengthVerifier {
+    template <typename Value, typename Predicate>
+    static constexpr auto verify(Value&& val, const Predicate& p) -> typename std::decay<Value>::type {
+        return p(val) ? std::forward<Value>(val) : (
+            throw RuntimeError(__FILE__, __LINE__, Length::tr("Value out of range.")),
+            std::forward<Value>(val));
+    }
+};
+
+struct PositiveLengthConstraint {
+    constexpr bool operator()(const Length& l) const noexcept {
+        return l > 0;
+    }
+};
+
+using PositiveLength = type_safe::constrained_type<Length, PositiveLengthConstraint, PositiveLengthVerifier>;
+
+inline UnsignedLength positiveToUnsigned(const PositiveLength& l) noexcept {
+    return UnsignedLength(*l);
+}
+
+/*****************************************************************************************
  *  Non-Member Functions
  ****************************************************************************************/
 
@@ -540,6 +587,28 @@ template <>
 inline Length deserializeFromSExpression(const SExpression& sexpr, bool throwIfEmpty) {
     QString str = sexpr.getStringOrToken(throwIfEmpty);
     return Length::fromMm(str);
+}
+
+template <>
+inline SExpression serializeToSExpression(const UnsignedLength& obj) {
+    return SExpression::createToken(obj->toMmString());
+}
+
+template <>
+inline UnsignedLength deserializeFromSExpression(const SExpression& sexpr, bool throwIfEmpty) {
+    QString str = sexpr.getStringOrToken(throwIfEmpty);
+    return UnsignedLength(Length::fromMm(str));
+}
+
+template <>
+inline SExpression serializeToSExpression(const PositiveLength& obj) {
+    return SExpression::createToken(obj->toMmString());
+}
+
+template <>
+inline PositiveLength deserializeFromSExpression(const SExpression& sexpr, bool throwIfEmpty) {
+    QString str = sexpr.getStringOrToken(throwIfEmpty);
+    return PositiveLength(Length::fromMm(str));
 }
 
 QDataStream& operator<<(QDataStream& stream, const Length& length);

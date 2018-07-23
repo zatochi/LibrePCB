@@ -62,8 +62,8 @@ class FootprintPad final : public SerializableObject
         FootprintPad() = delete;
         FootprintPad(const FootprintPad& other) noexcept;
         FootprintPad(const Uuid& padUuid, const Point& pos, const Angle& rot,
-                     Shape shape, const Length& width, const Length& height,
-                     const Length& drillDiameter, BoardSide side) noexcept;
+                     Shape shape, const UnsignedLength& width, const UnsignedLength& height,
+                     const UnsignedLength& drillDiameter, BoardSide side) noexcept;
         explicit FootprintPad(const SExpression& node);
         ~FootprintPad() noexcept;
 
@@ -73,9 +73,9 @@ class FootprintPad final : public SerializableObject
         const Point& getPosition() const noexcept {return mPosition;}
         const Angle& getRotation() const noexcept {return mRotation;}
         Shape getShape() const noexcept {return mShape;}
-        const Length& getWidth() const noexcept {return mWidth;}
-        const Length& getHeight() const noexcept {return mHeight;}
-        const Length& getDrillDiameter() const noexcept {return mDrillDiameter;}
+        const UnsignedLength& getWidth() const noexcept {return mWidth;}
+        const UnsignedLength& getHeight() const noexcept {return mHeight;}
+        const UnsignedLength& getDrillDiameter() const noexcept {return mDrillDiameter;}
         BoardSide getBoardSide() const noexcept {return mBoardSide;}
         QString getLayerName() const noexcept;
         bool isOnLayer(const QString& name) const noexcept;
@@ -87,9 +87,9 @@ class FootprintPad final : public SerializableObject
         void setPosition(const Point& pos) noexcept;
         void setRotation(const Angle& rot) noexcept;
         void setShape(Shape shape) noexcept;
-        void setWidth(const Length& width) noexcept;
-        void setHeight(const Length& height) noexcept;
-        void setDrillDiameter(const Length& diameter) noexcept;
+        void setWidth(const UnsignedLength& width) noexcept;
+        void setHeight(const UnsignedLength& height) noexcept;
+        void setDrillDiameter(const UnsignedLength& diameter) noexcept;
         void setBoardSide(BoardSide side) noexcept;
 
         // General Methods
@@ -98,7 +98,6 @@ class FootprintPad final : public SerializableObject
 
         /// @copydoc librepcb::SerializableObject::serialize()
         virtual void serialize(SExpression& root) const override;
-        virtual bool checkAttributesValidity() const noexcept;
 
         // Operator Overloadings
         bool operator==(const FootprintPad& rhs) const noexcept;
@@ -111,9 +110,9 @@ class FootprintPad final : public SerializableObject
         Point mPosition;
         Angle mRotation;
         Shape mShape;
-        Length mWidth;
-        Length mHeight;
-        Length mDrillDiameter; // no effect if BoardSide != THT!
+        UnsignedLength mWidth;
+        UnsignedLength mHeight;
+        UnsignedLength mDrillDiameter; // no effect if BoardSide != THT!
         BoardSide mBoardSide;
         FootprintPadGraphicsItem* mRegisteredGraphicsItem;
 };

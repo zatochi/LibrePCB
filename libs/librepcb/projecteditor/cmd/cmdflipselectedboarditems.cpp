@@ -104,7 +104,7 @@ bool CmdFlipSelectedBoardItems::performExecute()
     }
     if (count > 0) {
         center /= count;
-        center.mapToGrid(mBoard.getGridProperties().getInterval());
+        center.mapToGrid(*mBoard.getGridProperties().getInterval());
     } else {
         // no items selected --> nothing to do here
         undoScopeGuard.dismiss();

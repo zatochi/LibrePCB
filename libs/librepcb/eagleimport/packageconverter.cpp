@@ -64,7 +64,7 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
         QString layerName = convertBoardLayer(wire.getLayer());
         bool fill = false;
         bool isGrabArea = true;
-        Length lineWidth = Length::fromMm(wire.getWidth());
+        UnsignedLength lineWidth = UnsignedLength(Length::fromMm(wire.getWidth()));
         Point startpos = Point::fromMm(wire.getP1().x, wire.getP1().y);
         Point endpos = Point::fromMm(wire.getP2().x, wire.getP2().y);
         Angle angle = Angle::fromDeg(wire.getCurve());
@@ -76,7 +76,7 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
         QString layerName = convertBoardLayer(rect.getLayer());
         bool fill = true;
         bool isGrabArea = true;
-        Length lineWidth = 0;
+        UnsignedLength lineWidth(0);
         Point p1 = Point::fromMm(rect.getP1().x, rect.getP1().y);
         Point p2 = Point::fromMm(rect.getP2().x, rect.getP2().y);
         footprint->getPolygons().append(std::make_shared<Polygon>(Uuid::createRandom(),
@@ -85,20 +85,20 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
 
     foreach (const parseagle::Circle& circle, mPackage.getCircles()) {
         QString layerName = convertBoardLayer(circle.getLayer());
-        Length radius = Length::fromMm(circle.getRadius());
+        PositiveLength diameter = PositiveLength(Length::fromMm(circle.getRadius()) * 2);
         Point center = Point::fromMm(circle.getPosition().x, circle.getPosition().y);
-        Length lineWidth = Length::fromMm(circle.getWidth());
-        bool fill = (lineWidth == 0);
+        UnsignedLength lineWidth = UnsignedLength(Length::fromMm(circle.getWidth()));
+        bool fill = (*lineWidth == 0);
         bool isGrabArea = true;
         footprint->getCircles().append(std::make_shared<Circle>(Uuid::createRandom(),
-            layerName, lineWidth, fill, isGrabArea, center, radius * 2));
+            layerName, lineWidth, fill, isGrabArea, center, diameter));
     }
 
     foreach (const parseagle::Polygon& polygon, mPackage.getPolygons()) {
         QString layerName = convertBoardLayer(polygon.getLayer());
         bool fill = false;
         bool isGrabArea = true;
-        Length lineWidth = Length::fromMm(polygon.getWidth());
+        UnsignedLength lineWidth = UnsignedLength(Length::fromMm(polygon.getWidth()));
         Path path;
         for (int i = 0; i < polygon.getVertices().count(); ++i) {
             const parseagle::Vertex vertex = polygon.getVertices().at(i);
@@ -117,18 +117,18 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
         if (textStr.startsWith(">")) {
             textStr = "{{" + textStr.mid(1) + "}}";
         }
-        Length height = Length::fromMm(text.getSize());
+        PositiveLength height = PositiveLength(Length::fromMm(text.getSize()));
         Point pos = Point::fromMm(text.getPosition().x, text.getPosition().y);
         Angle rot = Angle::fromDeg(text.getRotation().getAngle());
         Alignment align(HAlign::left(), VAlign::bottom());
         footprint->getStrokeTexts().append(std::make_shared<StrokeText>(
             Uuid::createRandom(), layerName, textStr, pos, rot, height,
-            Length(200000), StrokeTextSpacing(), StrokeTextSpacing(), align, false, true));
+            UnsignedLength(200000), StrokeTextSpacing(), StrokeTextSpacing(), align, false, true));
     }
 
     foreach (const parseagle::Hole& hole, mPackage.getHoles()) {
         Point pos = Point::fromMm(hole.getPosition().x, hole.getPosition().y);
-        Length diameter = Length::fromMm(hole.getDiameter());
+        PositiveLength diameter = PositiveLength(Length::fromMm(hole.getDiameter()));
         footprint->getHoles().append(std::make_shared<Hole>(Uuid::createRandom(), pos, diameter));
     }
 
@@ -137,11 +137,11 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
         QString name = pad.getName();
         package->getPads().append(std::make_shared<library::PackagePad>(uuid, name));
         Point pos = Point::fromMm(pad.getPosition().x, pad.getPosition().y);
-        Length drillDiameter = Length::fromMm(pad.getDrillDiameter());
-        Length outerDiameter = Length::fromMm(pad.getOuterDiameter());
-        Length padDiameter = (outerDiameter > 0) ? outerDiameter : drillDiameter * 2;
-        Length width = padDiameter;
-        Length height = padDiameter;
+        UnsignedLength drillDiameter = UnsignedLength(Length::fromMm(pad.getDrillDiameter()));
+        UnsignedLength outerDiameter = UnsignedLength(Length::fromMm(pad.getOuterDiameter()));
+        UnsignedLength padDiameter = (*outerDiameter > 0) ? outerDiameter : UnsignedLength(*drillDiameter * 2);
+        UnsignedLength width = padDiameter;
+        UnsignedLength height = padDiameter;
         library::FootprintPad::Shape shape;
         switch (pad.getShape()) {
             case parseagle::ThtPad::Shape::Square:
@@ -155,7 +155,7 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
                 break;
             case parseagle::ThtPad::Shape::Long:
                 shape = library::FootprintPad::Shape::ROUND;
-                width = padDiameter * 2;
+                width = UnsignedLength(*padDiameter * 2);
                 break;
             default:
                 throw Exception(__FILE__, __LINE__, "Unknown shape");
@@ -181,10 +181,10 @@ std::unique_ptr<library::Package> PackageConverter::generate() const
         }
         Point pos = Point::fromMm(pad.getPosition().x, pad.getPosition().y);
         Angle rot = Angle::fromDeg(pad.getRotation().getAngle());
-        Length width = Length::fromMm(pad.getWidth());
-        Length height = Length::fromMm(pad.getHeight());
+        UnsignedLength width = UnsignedLength(Length::fromMm(pad.getWidth()));
+        UnsignedLength height = UnsignedLength(Length::fromMm(pad.getHeight()));
         std::shared_ptr<library::FootprintPad> fptPad(new library::FootprintPad(uuid, pos,
-            rot, library::FootprintPad::Shape::RECT, width, height, Length(0), side));
+            rot, library::FootprintPad::Shape::RECT, width, height, UnsignedLength(0), side));
         footprint->getPads().append(fptPad);
     }
 

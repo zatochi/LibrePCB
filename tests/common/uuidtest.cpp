@@ -173,7 +173,7 @@ TEST_P(UuidTest, testFromString)
     }
 }
 
-TEST_P(UuidTest, testDeserializeFromString)
+/*TEST_P(UuidTest, testDeserializeFromString)
 {
     const UuidTestData& data = GetParam();
     if (data.valid) {
@@ -181,7 +181,7 @@ TEST_P(UuidTest, testDeserializeFromString)
     } else {
         EXPECT_THROW(Uuid::deserializeFromString(data.uuid), Exception);
     }
-}
+}*/
 
 TEST_P(UuidTest, testTryFromString)
 {

@@ -56,14 +56,14 @@ BI_Via::BI_Via(BI_NetSegment& netsegment, const SExpression& node) :
     mUuid(node.getChildByIndex(0).getValue<Uuid>()),
     mPosition(node.getChildByPath("pos")),
     mShape(node.getValueByPath<Shape>("shape")),
-    mSize(node.getValueByPath<Length>("size")),
-    mDrillDiameter(node.getValueByPath<Length>("drill"))
+    mSize(node.getValueByPath<PositiveLength>("size")),
+    mDrillDiameter(node.getValueByPath<PositiveLength>("drill"))
 {
     init();
 }
 
-BI_Via::BI_Via(BI_NetSegment& netsegment, const Point& position, Shape shape, const Length& size,
-               const Length& drillDiameter) :
+BI_Via::BI_Via(BI_NetSegment& netsegment, const Point& position, Shape shape, const PositiveLength& size,
+               const PositiveLength& drillDiameter) :
     BI_Base(netsegment.getBoard()), mNetSegment(netsegment), mUuid(Uuid::createRandom()),
     mPosition(position), mShape(shape), mSize(size), mDrillDiameter(drillDiameter)
 {
@@ -102,7 +102,7 @@ bool BI_Via::isOnLayer(const QString& layerName) const noexcept
 
 Path BI_Via::getOutline(const Length& expansion) const noexcept
 {
-    Length size = mSize + (expansion * 2);
+    Length size = *mSize + (expansion * 2);
     if (size > 0) {
         switch (mShape) {
             case Shape::Round:      return Path::circle(size);
@@ -123,7 +123,7 @@ QPainterPath BI_Via::toQPainterPathPx(const Length& expansion) const noexcept
 {
     QPainterPath p = getOutline(expansion).toQPainterPathPx();
     p.setFillRule(Qt::OddEvenFill); // important to subtract the hole!
-    p.addEllipse(QPointF(0, 0), mDrillDiameter.toPx()/2, mDrillDiameter.toPx()/2);
+    p.addEllipse(QPointF(0, 0), mDrillDiameter->toPx()/2, mDrillDiameter->toPx()/2);
     return p;
 }
 
@@ -149,7 +149,7 @@ void BI_Via::setShape(Shape shape) noexcept
     }
 }
 
-void BI_Via::setSize(const Length& size) noexcept
+void BI_Via::setSize(const PositiveLength& size) noexcept
 {
     if (size != mSize) {
         mSize = size;
@@ -157,7 +157,7 @@ void BI_Via::setSize(const Length& size) noexcept
     }
 }
 
-void BI_Via::setDrillDiameter(const Length& diameter) noexcept
+void BI_Via::setDrillDiameter(const PositiveLength& diameter) noexcept
 {
     if (diameter != mDrillDiameter) {
         mDrillDiameter = diameter;

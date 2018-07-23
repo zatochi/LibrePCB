@@ -83,7 +83,7 @@ CmdMoveSelectedSymbolItems::~CmdMoveSelectedSymbolItems() noexcept
 void CmdMoveSelectedSymbolItems::setCurrentPosition(const Point& pos) noexcept
 {
     Point delta = pos - mStartPos;
-    delta.mapToGrid(mContext.graphicsView.getGridProperties().getInterval());
+    delta.mapToGrid(*mContext.graphicsView.getGridProperties().getInterval());
 
     if (delta != mDeltaPos) {
         // move selected elements

@@ -112,7 +112,7 @@ CmdMoveSelectedBoardItems::~CmdMoveSelectedBoardItems() noexcept
 void CmdMoveSelectedBoardItems::setCurrentPosition(const Point& pos) noexcept
 {
     Point delta = pos - mStartPos;
-    delta.mapToGrid(mBoard.getGridProperties().getInterval());
+    delta.mapToGrid(*mBoard.getGridProperties().getInterval());
 
     if (delta != mDeltaPos) {
         // move selected elements

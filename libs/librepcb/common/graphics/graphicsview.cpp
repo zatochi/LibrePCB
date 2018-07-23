@@ -128,7 +128,7 @@ Point GraphicsView::mapGlobalPosToScenePos(const QPoint& globalPosPx, bool bound
         localPosPx.setX(qBound(0, localPosPx.x(), width()));
         localPosPx.setY(qBound(0, localPosPx.y(), height()));
     }
-    Length gridInterval = mapToGrid ? mGridProperties->getInterval() : Length(0);
+    Length gridInterval = mapToGrid ? *mGridProperties->getInterval() : Length(0);
     return Point::fromPx(mapToScene(localPosPx), gridInterval);
 }
 
@@ -271,7 +271,7 @@ void GraphicsView::drawBackground(QPainter* painter, const QRectF& rect)
     gridPen.setWidth((mGridProperties->getType() == GridProperties::Type_t::Dots) ? 2 : 1);
     painter->setPen(gridPen);
     painter->setBrush(Qt::NoBrush);
-    qreal gridIntervalPixels = mGridProperties->getInterval().toPx();
+    qreal gridIntervalPixels = mGridProperties->getInterval()->toPx();
     qreal scaleFactor = width() / rect.width();
     if (gridIntervalPixels * scaleFactor >= (qreal)5)
     {

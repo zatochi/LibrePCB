@@ -93,7 +93,7 @@ bool CmdRotateSelectedSymbolItems::performExecute()
         center += text->getText().getPosition();
     }
     center /= count;
-    center.mapToGrid(mContext.graphicsView.getGridProperties().getInterval());
+    center.mapToGrid(*mContext.graphicsView.getGridProperties().getInterval());
 
     // rotate all selected elements
     foreach (const QSharedPointer<SymbolPinGraphicsItem>& pin, pins) {Q_ASSERT(pin);

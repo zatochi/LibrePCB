@@ -75,10 +75,10 @@ void PrimitivePathGraphicsItem::setPath(const QPainterPath& path) noexcept
     updateBoundingRectAndShape();
 }
 
-void PrimitivePathGraphicsItem::setLineWidth(const Length& width) noexcept
+void PrimitivePathGraphicsItem::setLineWidth(const UnsignedLength& width) noexcept
 {
-    mPen.setWidthF(width.toPx());
-    mPenHighlighted.setWidthF(width.toPx());
+    mPen.setWidthF(width->toPx());
+    mPenHighlighted.setWidthF(width->toPx());
     updateBoundingRectAndShape();
 }
 

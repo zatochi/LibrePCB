@@ -98,7 +98,7 @@ void BGI_Footprint::updateCacheAndRepaint() noexcept
         if (!layer->isVisible()) continue;
 
         QPainterPath polygonPath = polygon.getPath().toQPainterPathPx();
-        qreal w = polygon.getLineWidth().toPx() / 2;
+        qreal w = polygon.getLineWidth()->toPx() / 2;
         mBoundingRect = mBoundingRect.united(polygonPath.boundingRect().adjusted(-w, -w, w, w));
         if (!polygon.isGrabArea()) continue;
         layer = getLayer(GraphicsLayer::sTopGrabAreas);
@@ -136,8 +136,8 @@ void BGI_Footprint::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
         if (!layer->isVisible()) continue;
 
         // set pen
-        if (polygon.getLineWidth() > 0)
-            painter->setPen(QPen(layer->getColor(selected), polygon.getLineWidth().toPx(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        if (*polygon.getLineWidth() > 0)
+            painter->setPen(QPen(layer->getColor(selected), polygon.getLineWidth()->toPx(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         else
             painter->setPen(Qt::NoPen);
 
@@ -169,8 +169,8 @@ void BGI_Footprint::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
         if (!layer->isVisible()) continue;
 
         // set pen
-        if (circle.getLineWidth() > 0)
-            painter->setPen(QPen(layer->getColor(selected), circle.getLineWidth().toPx(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
+        if (*circle.getLineWidth() > 0)
+            painter->setPen(QPen(layer->getColor(selected), circle.getLineWidth()->toPx(), Qt::SolidLine, Qt::RoundCap, Qt::RoundJoin));
         else
             painter->setPen(Qt::NoPen);
 
@@ -192,8 +192,8 @@ void BGI_Footprint::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
 
         // draw circle
         painter->drawEllipse(circle.getCenter().toPxQPointF(),
-                             circle.getDiameter().toPx() / 2,
-                             circle.getDiameter().toPx() / 2);
+                             circle.getDiameter()->toPx() / 2,
+                             circle.getDiameter()->toPx() / 2);
         // TODO: rotation
     }
 
@@ -209,7 +209,7 @@ void BGI_Footprint::paint(QPainter* painter, const QStyleOptionGraphicsItem* opt
         painter->setBrush(QBrush(layer->getColor(selected), Qt::SolidPattern));
 
         // draw hole
-        qreal radius = (hole.getDiameter() / 2).toPx();
+        qreal radius = (*hole.getDiameter() / 2).toPx();
         painter->drawEllipse(hole.getPosition().toPxQPointF(), radius, radius);
     }
 

@@ -88,7 +88,7 @@ bool CmdRotateSelectedSchematicItems::performExecute()
     }
     if (count > 0) {
         center /= count;
-        center.mapToGrid(mSchematic.getGridProperties().getInterval());
+        center.mapToGrid(*mSchematic.getGridProperties().getInterval());
     } else {
         // no items selected --> nothing to do here
         return false;

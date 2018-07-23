@@ -87,7 +87,7 @@ CmdMoveSelectedSchematicItems::~CmdMoveSelectedSchematicItems() noexcept
 void CmdMoveSelectedSchematicItems::setCurrentPosition(const Point& pos) noexcept
 {
     Point delta = pos - mStartPos;
-    delta.mapToGrid(mSchematic.getGridProperties().getInterval());
+    delta.mapToGrid(*mSchematic.getGridProperties().getInterval());
 
     if (delta != mDeltaPos) {
         // move selected elements
